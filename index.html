@@ -1,0 +1,79 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<FONT FACE="Comic Sans MS" SIZE=6 COLOR="red"><h1 style='text-align: center;' color='blue'>CONTEO DE TWEETS POR #</h1></FONT>
+<div style="height:80%; width:85%;" >
+    <canvas id="myChart"></canvas>
+</div>
+
+<script>
+    // Setup
+const labels = [];
+const data = {
+  labels: labels,
+  datasets: [{
+    axis: 'y',
+    label: 'Conteo de hashtags#',
+    data: [],
+    backgroundColor: [
+      'rgba(255, 0, 0, 0.2)',
+      'rgba(255, 159, 64, 0.2)',
+      'rgba(2105, 205, 86, 0.2)',
+      'rgba(75, 192, 192, 0.2)',
+      'rgba(54, 162, 235, 0.2)',
+      'rgba(153, 102, 255, 0.2)',
+      'rgba(201, 203, 207, 0.2)'
+    ],
+    borderColor: [
+      'rgb(255, 160, 132)',
+      'rgb(255, 159, 64)',
+      'rgb(255, 205, 86)',
+      'rgb(75, 192, 192)',
+      'rgb(54, 162, 235)',
+      'rgb(153, 102, 255)',
+      'rgb(201, 203, 207)'
+    ],
+    borderWidth: 1
+  }]
+};
+
+// Config
+const config = {
+  type: 'bar',
+  data: data,
+  options: {
+    indexAxis: 'y',
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  },
+};
+
+// Creacion
+var myChart = new Chart(
+    document.getElementById('myChart'),
+    config
+  );
+function update(){
+axios.get('http://ec2-100-26-122-88.compute-1.amazonaws.com:5000/dashboard').then(function(response){
+
+    console.log(response);
+    
+    myChart.data.labels = Object.keys(response['data']);
+    myChart.data.datasets[0].data =Object.values(response['data']);
+    try{
+        myChart.update();
+    }catch(error){
+        location.reload();
+    }
+    
+   
+});
+}
+setInterval(update,2000)
+
+
+</script>
